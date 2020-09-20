@@ -19,7 +19,7 @@
  *  \tparam TVertex represents a type for vertices. Will be used as a node ID by
  *  copy, so choose it cleverly. Must be comparable.
  ******************************************************************************/
-template <typename TVertex>
+template <typename Vertex>
 class UGraph {
 public:
     // type definitions
@@ -32,9 +32,9 @@ public:
     class Edge {
     public:
         // constructors and all
-        Edge() : _s(TVertex()), _d(TVertex()) { }
+        Edge() : _s(Vertex()), _d(Vertex()) { }
 
-        Edge(TVertex s, TVertex d)
+        Edge(Vertex s, Vertex d)
         {
             // we always put “smaller” node as “source”
             if(s < d)
@@ -62,30 +62,158 @@ public:
 
     public:
         // setter/getters
-        TVertex getS() const { return _s; }
-        TVertex getD() const { return _d; }
+        Vertex getS() const { return _s; }
+        Vertex getD() const { return _d; }
 
     protected:
         /// Relatively speaking, source and destination nodes.
-        TVertex _s, _d;
+        Vertex _s, _d;
 
     }; // struct Edge
 
     /// Set of vertices.
-    typedef std::set<TVertex> VerticesSet;
+    typedef std::set<Vertex> VerticesSet;
+
+    /// Iterator type for vertices.
+    typedef typename VerticesSet::iterator VertexIter;
+
+    /// Pair of vertex iterators.
+    typedef std::pair<VertexIter, VertexIter> VertexIterPair;
+
+    // TODO: there need to define const iterator types.
+
+    // Edge Iterators must be defined customly!
+
 
     /// \brief Adjacency list datatype, for storing adjacent vertices.
     ///
     /// Consists of exactly twice more elements than the number of edges in a
     /// graph (think of why).
-    typedef std::multimap<TVertex, TVertex> AdjList;
+    typedef std::multimap<Vertex, Vertex> AdjList;
+    typedef typename AdjList::iterator AdjListIter;
+    typedef typename AdjList::const_iterator AdjListCIter;
+
+
+    /// \brief Custom definition of Edge Iterators.
+    ///
+    /// Iterator is an any object that behaves like an iterator. So, we need
+    /// to implement all necessary features specific to the forward iterator.
+    ///
+    /// This class iterates a given range of edges in a multimap, considering
+    /// only non-repeating edges.
+    class EdgeIter {
+    public:
+        // Typically expected types
+//        typedef Edge                        value_type;
+//        typedef Edge&                       reference;
+//        typedef Edge*                       pointer;
+        typedef typename AdjListCIter::value_type  value_type;
+        typedef typename AdjListCIter::reference   reference;
+        typedef typename AdjListCIter::pointer     pointer;
+
+
+        typedef std::forward_iterator_tag   iterator_category;
+        typedef long                        difference_type;
+
+        typedef EdgeIter Self;              ///< For convenience.
+    public:
+        // Minimum set of expected operations
+        EdgeIter(AdjListCIter cur, AdjListCIter end)
+            : _cur(cur), _end(end)
+        {
+            goUntilNextValid();
+        }
+
+        /// Prefix verion of ++: iterates first until the end.
+        Self operator++(int junk)
+        {
+            ++_cur;
+            goUntilNextValid();
+
+            return *this;
+        }
+
+        // Postfix version of ++: creates a copy of this.
+        Self operator++()
+        {
+            Self curCopy = *this;
+
+            ++_cur;
+            goUntilNextValid();
+
+            return curCopy;
+        }
+
+        // this works perfectly and  could be cool, but breaks a bit general
+        // (expected!) logic of iterators
+        //Edge operator*() { return Edge(_cur->first, _cur->second); }
+
+        reference operator*() { return *_cur; }
+        pointer operator->() { return _cur; }
+
+        bool operator==(const Self& rhv)
+        {
+            return (_cur == rhv._cur) && (_end == rhv._end);
+        }
+
+        bool operator!=(const Self& rhv)
+        {
+            return !(*this == rhv);
+        }
+
+    protected:
+        /// Iterates the underlying mmap until finds a valid pair or reaches
+        /// the end.
+        void goUntilNextValid()
+        {
+            bool duplicate = false;             // indicates duplicates existance
+            while (_cur != _end)
+            {
+                // self-loop case
+                if(_cur->first == _cur->second)
+                {
+                    if(duplicate)
+                    {
+                        duplicate = false;
+                        return;                 // valid second instance of s SL
+                    }
+                    duplicate = true;
+                    ++_cur;
+                    continue;
+                }
+
+                // “normal” case
+                if(_cur->first < _cur->second)
+                    return;                     // valid first part of edge
+
+                // “collinear” case
+                // _cur->first > _cur->second
+                ++_cur;
+                continue;
+            }
+
+            return;                             // endge empty
+        }
+
+    protected:
+        AdjListCIter _cur;                   ///< Current iterator in the mmap.
+        AdjListCIter _end;                   ///< End iterator in the mmap.
+    }; // class EdgeIter
+
+
+
+    /// Pair of edge iterators.
+    typedef std::pair<EdgeIter, EdgeIter> EdgeIterPair;
+
+
+
 
 
 public:
     // Graph structure modifying methods.
 
     /// Adds into this graph a new vertex \a v and returns it by value.
-    TVertex addVertex(TVertex v)
+    Vertex addVertex(Vertex v)
     {
         _vertices.insert(v);
         return v;
@@ -96,7 +224,7 @@ public:
     ///
     /// If a correponding edge {s, d} or equivalent {d, s} has been added earlier,
     /// do nothing else as just return an edge object.
-    Edge addEdge(TVertex s, TVertex d)
+    Edge addEdge(Vertex s, Vertex d)
     {
         if(!isEdgeExists(s, d))      // need to add
         {
@@ -119,7 +247,7 @@ public:
     ///
     /// Graph guarantees that is a vertex {a, b} exists then its counterpart
     /// {b, a} exists too.
-    bool isEdgeExists(TVertex s, TVertex d) const
+    bool isEdgeExists(Vertex s, Vertex d) const
     {
         auto itlow = _edges.lower_bound(s);
         auto itup = _edges.upper_bound(s);
@@ -132,7 +260,7 @@ public:
         return false;
     }
 
-    bool isVertexExists(TVertex v) const
+    bool isVertexExists(Vertex v) const
     {
         return (_vertices.find(v) != _vertices.end());
     }
@@ -143,6 +271,21 @@ public:
     // setters/getters
     size_t getVerticesNum() const { return _vertices.size(); }
     size_t getEdgesNum() const { return _edges.size() / 2; }
+
+
+    /// Provides a collection of vertices as a semirange (pair of iterators).
+    VertexIterPair getVertices() const
+    {
+        return {_vertices.begin(), _vertices.end()};
+    }
+
+    EdgeIterPair getEdges() const
+    {
+        EdgeIter beg(_edges.begin(), _edges.end());
+        EdgeIter end(_edges.end(), _edges.end());
+
+        return {beg, end};
+    }
 
 
 protected:

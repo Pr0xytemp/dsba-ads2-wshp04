@@ -91,3 +91,69 @@ TEST(UGraph, addEdge1)
     EXPECT_TRUE(g.isVertexExists(3));
 }
 
+// Tests an empty graph for its default properties.
+TEST(UGraph, getVertices1)
+{
+    IntGraph g;
+    EXPECT_EQ(0, g.getVerticesNum());
+    IntGraph::VertexIterPair vs = g.getVertices();
+    EXPECT_TRUE(vs.first == vs.second);
+
+    g.addVertex(1);
+    g.addVertex(2);
+    g.addVertex(3);
+
+    vs = g.getVertices();
+    EXPECT_TRUE(vs.first != vs.second);
+
+    int c = 0;
+    for(IntGraph::VertexIter it = vs.first; it != vs.second; ++it)
+        ++c;
+    EXPECT_EQ(3, c);
+}
+
+// Tests iterating edges using cutom EdgeIterators.
+TEST(UGraph, iterEdges1)
+{
+    IntGraph g;
+    g.addEdge(1, 2);
+    g.addEdge(1, 3);
+    g.addEdge(1, 4);
+    g.addEdge(2, 4);
+    EXPECT_EQ(4, g.getVerticesNum());
+    EXPECT_EQ(4, g.getEdgesNum());
+
+    IntGraph::EdgeIterPair es = g.getEdges();
+    int c = 0;
+    for(IntGraph::EdgeIter it = es.first; it != es.second; ++it)
+    {
+        auto a = *it;
+        ++c;
+    }
+    EXPECT_EQ(4, c);
+}
+
+// Tests iterating edges w/ self-loops using cutom EdgeIterators.
+TEST(UGraph, iterEdges2)
+{
+    IntGraph g;
+    g.addEdge(1, 2);
+    g.addEdge(1, 3);
+    g.addEdge(2, 2);
+    g.addEdge(1, 4);
+    g.addEdge(2, 4);
+    g.addEdge(4, 4);
+
+    EXPECT_EQ(4, g.getVerticesNum());
+    EXPECT_EQ(6, g.getEdgesNum());
+
+    IntGraph::EdgeIterPair es = g.getEdges();
+    int c = 0;
+    for(IntGraph::EdgeIter it = es.first; it != es.second; ++it)
+    {
+        auto a = *it;
+        ++c;
+    }
+    EXPECT_EQ(6, c);
+}
+

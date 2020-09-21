@@ -7,10 +7,12 @@ add_executable(tests
     # list of tests
     ugraph_test.cpp
     lbl_ugraph_test.cpp
+    ugraph_algos_test.cpp
 
     # list of sources
     ../src/ugraph/ugraph.hpp
     ../src/ugraph/lbl_ugraph.hpp
+    ../src/ugraph/ugraph_algos.hpp
     
     # gtest sources
     gtest/gtest-all.cc

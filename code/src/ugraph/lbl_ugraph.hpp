@@ -1,9 +1,9 @@
-/*! \file lbl_udgraph.hpp
+/*! \file lbl_ugraph.hpp
  *  Contains declarations of the types for labeled undirected graphs.
  */
 
-#ifndef LBL_UDGRAPH_HPP
-#define LBL_UDGRAPH_HPP
+#ifndef LBL_UGRAPH_HPP
+#define LBL_UGRAPH_HPP
 
 #include "ugraph.hpp"
 
@@ -71,4 +71,4 @@ protected:
     EdgeLabeling _edgeLabeling;
 };
 
-#endif // UDGRAPH_HPP
+#endif // UGRAPH_HPP

@@ -16,7 +16,7 @@
 /*! ****************************************************************************
  *  \brief The UGraph class represents a undirected graph.
  *
- *  \tparam TVertex represents a type for vertices. Will be used as a node ID by
+ *  \tparam Vertex represents a type for vertices. Will be used as a node ID by
  *  copy, so choose it cleverly. Must be comparable.
  ******************************************************************************/
 template <typename Vertex>
@@ -24,52 +24,7 @@ class UGraph {
 public:
     // type definitions
 
-    /// \brief Custom datatype for representing Edge of a graph as an unordered pair
-    /// of nodes.
-    ///
-    /// Stores vertices normalized, which means that “smaller” vertex is always
-    /// stored as _s, ad “bigger” as _d.
-    class Edge {
-    public:
-        // constructors and all
-        Edge() : _s(Vertex()), _d(Vertex()) { }
-
-        Edge(Vertex s, Vertex d)
-        {
-            // we always put “smaller” node as “source”
-            if(s < d)
-            {
-                _s = s;
-                _d = d;
-            }
-            else
-            {
-                _s = d;
-                _d = s;
-            }
-        }
-
-    public:
-        // Comparison operator
-        bool operator==(const Edge& other) const
-        {
-            // {a, b} == {a, b} OR
-            // {a, b} == {b, a}
-
-            return (_s == other._s && _d == other._d);
-                  // || (s == other.d && d == other.s);
-        }
-
-    public:
-        // setter/getters
-        Vertex getS() const { return _s; }
-        Vertex getD() const { return _d; }
-
-    protected:
-        /// Relatively speaking, source and destination nodes.
-        Vertex _s, _d;
-
-    }; // struct Edge
+    typedef std::pair<Vertex, Vertex> Edge;
 
     /// Set of vertices.
     typedef std::set<Vertex> VerticesSet;
@@ -206,10 +161,20 @@ public:
     typedef std::pair<EdgeIter, EdgeIter> EdgeIterPair;
 
 
-
-
-
 public:
+    // Helpers
+
+    /// Creates an edge as a pair of provided vertices s.t. the “smaller” node
+    /// goes first and the “greater” node goes second.
+    static Edge makeNormalizedEdge(Vertex s, Vertex d)
+    {
+        if(s < d)
+            return {s, d};
+
+        return {d, s};
+    }
+
+
     // Graph structure modifying methods.
 
     /// Adds into this graph a new vertex \a v and returns it by value.
@@ -236,7 +201,8 @@ public:
             _vertices.insert(s);
             _vertices.insert(d);
         }
-        Edge e(s, d);
+        //Edge e(s, d);
+        Edge e = makeNormalizedEdge(s, d);
 
         return e;
     }

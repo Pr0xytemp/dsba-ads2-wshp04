@@ -6,10 +6,11 @@ include_directories(.)
 add_executable(tests
     # list of tests
     ugraph_test.cpp
+    lbl_ugraph_test.cpp
 
     # list of sources
-    #../src/bidi_linked_list.h
-    #../src/bidi_linked_list.hpp
+    ../src/ugraph/ugraph.hpp
+    ../src/ugraph/lbl_ugraph.hpp
     
     # gtest sources
     gtest/gtest-all.cc

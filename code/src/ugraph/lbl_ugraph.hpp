@@ -1,6 +1,17 @@
-/*! \file lbl_ugraph.hpp
- *  Contains declarations of the types for labeled undirected graphs.
- */
+////////////////////////////////////////////////////////////////////////////////
+/// \file
+/// \brief      Contains declarations of the types for labeled undirected graphs.
+/// \author     Sergey Shershakov
+/// \version    0.1.0
+/// \date       21.09.2020
+/// \copyright  © Sergey Shershakov 2020.
+///             This code is for educational purposes of the course "Algorithms
+///             and Data Structures" provided by the Faculty of Computer Science
+///             at the Higher School of Economics.
+///
+/// When altering code, a copyright line must be preserved.
+///
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef LBL_UGRAPH_HPP
 #define LBL_UGRAPH_HPP

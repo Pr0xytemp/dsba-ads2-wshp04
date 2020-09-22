@@ -1,6 +1,18 @@
-/*! \file ugraph.hpp
- *  Contains declarations of the types for undirected graphs.
- */
+////////////////////////////////////////////////////////////////////////////////
+/// \file
+/// \brief      Contains declarations of the types for undirected graphs.
+/// \author     Sergey Shershakov
+/// \version    0.1.0
+/// \date       21.09.2020
+/// \copyright  © Sergey Shershakov 2020.
+///             This code is for educational purposes of the course "Algorithms
+///             and Data Structures" provided by the Faculty of Computer Science
+///             at the Higher School of Economics.
+///
+/// When altering code, a copyright line must be preserved.
+///
+////////////////////////////////////////////////////////////////////////////////
+
 
 #ifndef UGRAPH_HPP
 #define UGRAPH_HPP
@@ -103,7 +115,8 @@ public:
         //Edge operator*() { return Edge(_cur->first, _cur->second); }
 
         reference operator*() { return *_cur; }
-        pointer operator->() { return _cur; }
+        pointer operator->() { return &*_cur; } // seems a bit weird, need to clarify
+
 
         bool operator==(const Self& rhv)
         {
@@ -197,8 +210,8 @@ public:
             _edges.insert({d, s});
 
             // add edges vertices too
-            _vertices.insert(s);
-            _vertices.insert(d);
+            addVertex(s);
+            addVertex(d);
         }
         //Edge e(s, d);
         Edge e = makeNormalizedEdge(s, d);

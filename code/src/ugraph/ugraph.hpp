@@ -90,7 +90,7 @@ public:
             goUntilNextValid();
         }
 
-        /// Prefix verion of ++: iterates first until the end.
+        /// Prefix version of ++: iterates first until the end.
         Self operator++(int junk)
         {
             ++_cur;

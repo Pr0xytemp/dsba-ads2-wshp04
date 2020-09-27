@@ -27,7 +27,10 @@ template<typename Vertex, typename EdgeLbl>
 std::set<typename EdgeLblUGraph<Vertex, EdgeLbl>::Edge>
     findMSTPrim(const EdgeLblUGraph<Vertex, EdgeLbl>& g)
 {
-    // TODO:
+    // TODO: implement this!
+
+    std::set<typename EdgeLblUGraph<Vertex, EdgeLbl>::Edge> res;
+    return res;
 }
 
 /// Finds a MST for the given graph \a g using Kruskal's algorithm.
@@ -35,7 +38,10 @@ template<typename Vertex, typename EdgeLbl>
 std::set<typename EdgeLblUGraph<Vertex, EdgeLbl>::Edge>
     findMSTKruskal(const EdgeLblUGraph<Vertex, EdgeLbl>& g)
 {
-    // TODO:
+    // TODO: implement this!
+
+    std::set<typename EdgeLblUGraph<Vertex, EdgeLbl>::Edge> res;
+    return res;
 }
 
 

@@ -58,6 +58,7 @@ public:
     typedef std::multimap<Vertex, Vertex> AdjList;
     typedef typename AdjList::iterator AdjListIter;
     typedef typename AdjList::const_iterator AdjListCIter;
+    typedef std::pair<AdjListCIter, AdjListCIter> AdjListCIterPair;
 
 
     /// \brief Custom definition of Edge Iterators.
@@ -263,6 +264,13 @@ public:
         EdgeIter end(_edges.end(), _edges.end());
 
         return {beg, end};
+    }
+
+    /// Return a range of edges that are direct neighbours of the given
+    /// vertex \a v.
+    AdjListCIterPair getAdjEdges(Vertex v) const
+    {
+        return { _edges.lower_bound(v), _edges.upper_bound(v) };
     }
 
 
